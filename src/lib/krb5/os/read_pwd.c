@@ -130,15 +130,15 @@ read_console_password(krb5_context        context,
     handle = GetStdHandle(STD_INPUT_HANDLE);
     if (handle == INVALID_HANDLE_VALUE)
         return ENOTTY;
-    if (!GetConsoleMode(handle, &old_mode))
-        return ENOTTY;
+    //if (!GetConsoleMode(handle, &old_mode))
+    //    return ENOTTY;
 
     new_mode = old_mode;
     new_mode |=  ( ENABLE_LINE_INPUT | ENABLE_PROCESSED_INPUT );
     new_mode &= ~( ENABLE_ECHO_INPUT );
 
-    if (!SetConsoleMode(handle, new_mode))
-        return ENOTTY;
+    //if (!SetConsoleMode(handle, new_mode))
+    //    return ENOTTY;
 
     (void) fputs(prompt, stdout);
     (void) fflush(stdout);
@@ -186,7 +186,7 @@ read_console_password(krb5_context        context,
     }
 
 cleanup:
-    (void) SetConsoleMode(handle, old_mode);
+    //(void) SetConsoleMode(handle, old_mode);
     if (tmpstr) {
         (void) memset(tmpstr, 0, *pwsize);
         (void) free(tmpstr);

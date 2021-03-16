@@ -230,17 +230,17 @@ krb5_prompter_posix(krb5_context context,
     handle = GetStdHandle(STD_INPUT_HANDLE);
     if (handle == INVALID_HANDLE_VALUE)
         return ENOTTY;
-    if (!GetConsoleMode(handle, &old_mode))
+    if (_isatty(handle) && !GetConsoleMode(handle, &old_mode))
         return ENOTTY;
 
     new_mode = old_mode;
     new_mode |=  ( ENABLE_LINE_INPUT | ENABLE_PROCESSED_INPUT );
     new_mode &= ~( ENABLE_ECHO_INPUT );
 
-    if (!SetConsoleMode(handle, new_mode))
+    if (_isatty(handle) && !SetConsoleMode(handle, new_mode))
         return ENOTTY;
 
-    if (!SetConsoleMode(handle, old_mode))
+    if (_isatty(handle) && !SetConsoleMode(handle, old_mode))
         return ENOTTY;
 
     if (name) {
@@ -255,7 +255,7 @@ krb5_prompter_posix(krb5_context context,
 
     for (i = 0; i < num_prompts; i++) {
         if (prompts[i].hidden) {
-            if (!SetConsoleMode(handle, new_mode)) {
+            if (_isatty(handle) && !SetConsoleMode(handle, new_mode)) {
                 errcode = ENOTTY;
                 goto cleanup;
             }
@@ -287,7 +287,7 @@ krb5_prompter_posix(krb5_context context,
 
         prompts[i].reply->length = strlen(prompts[i].reply->data);
 
-        if (!SetConsoleMode(handle, old_mode)) {
+        if (_isatty(handle) && !SetConsoleMode(handle, old_mode)) {
             errcode = ENOTTY;
             goto cleanup;
         }
